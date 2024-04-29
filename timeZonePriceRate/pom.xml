@@ -3,24 +3,27 @@
          xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
          xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
     <modelVersion>4.0.0</modelVersion>
+    <parent>
+        <groupId>com.helloworld.callshop</groupId>
+        <artifactId>callshop</artifactId>
+        <version>1.0-SNAPSHOT</version>
+    </parent>
 
-    <groupId>com.helloworld.callshop</groupId>
-    <artifactId>callshop</artifactId>
-    <version>1.0-SNAPSHOT</version>
-    <packaging>pom</packaging>
+    <groupId>com.babel</groupId>
+    <artifactId>timeZonePriceRate</artifactId>
 
     <properties>
         <maven.compiler.source>17</maven.compiler.source>
         <maven.compiler.target>17</maven.compiler.target>
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
     </properties>
-
-    <modules>
-        <module>rater</module>
-        <module>raterEngine</module>
-        <module>fixPriceRate</module>
-        <module>percentualPriceRate</module>
-        <module>timeZonePriceRate</module>
-    </modules>
+    <dependencies>
+        <dependency>
+            <groupId>com.helloworld.callshop</groupId>
+            <artifactId>rater</artifactId>
+            <version>1.0-SNAPSHOT</version>
+            <scope>compile</scope>
+        </dependency>
+    </dependencies>
 
 </project>
