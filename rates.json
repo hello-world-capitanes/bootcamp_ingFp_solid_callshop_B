@@ -14,7 +14,7 @@
       "tipo":"PERC",
       "parametros": {
         "name": "Tarifa2",
-        "percent": 10
+        "percent": ""
       }
     },
     {

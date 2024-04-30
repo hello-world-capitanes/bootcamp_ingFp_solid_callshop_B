@@ -26,13 +26,12 @@ public class JsonParametersReader implements ParametersReader {
             String parameterValue = rate.get(parameterName.equalsIgnoreCase("NAME") ? "name" : parameterName)
                     .getAsString();
             if (!parameter.getValidator().test(parameterValue)) {
-                System.out.println("\nDatos no válidos para la tarifa " + rate.get("name").getAsString()
+                throw new IllegalArgumentException("Datos no válidos para la tarifa " + rate.get("name").getAsString()
                         + " en el campo " +
                         parameterName);
             }
             paramsMapper.put(parameter.getName(), parameterValue);
         }
-
 
         return paramsMapper;
     }

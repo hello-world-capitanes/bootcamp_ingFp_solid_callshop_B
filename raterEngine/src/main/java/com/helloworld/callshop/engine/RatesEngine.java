@@ -91,18 +91,16 @@ public class RatesEngine {
     public void run() throws Exception{
 
 
-        List<JsonObject> ratesList = listJsonRates();
-        System.out.println("Tarifas cargadas del json.");
-        for (JsonObject jsonRate : ratesList) {
-            RateFactory factory = factoriesContainer.getFactories().get(jsonRate.get("tipo").getAsString());
-            try {
-                Rate rate = factory.makeRate(new JsonParametersReader((JsonObject) jsonRate.get("parametros")));
-                RatesRepository.INSTANCE.addRate(rate);
-            } catch (Exception e) {
-                System.out.println("Error al procesar el json: " + e.getMessage() + "\n");
-            }
-        }
+        processJson();
+        //runConsole();
 
+
+        //TESTEAMOS LAS TARIFAS CREADAS. DE AQUÍ HACIA ABAJO, ES SIMPLEMENTE DEMOSTRACIÓN DE FUNCIONAMIENTO Y QUEDA FUERA
+        testRates();
+
+    }
+
+    private void runConsole() {
         String selectedFactory = "";
 
         while (!(selectedFactory = selectRateFactory()).equalsIgnoreCase("x")) {
@@ -115,10 +113,19 @@ public class RatesEngine {
             }
 
         }
-
-        //TESTEAMOS LAS TARIFAS CREADAS. DE AQUÍ HACIA ABAJO, ES SIMPLEMENTE DEMOSTRACIÓN DE FUNCIONAMIENTO Y QUEDA FUERA
-        testRates();
-
+    }
+    private void processJson() {
+        List<JsonObject> ratesList = listJsonRates();
+        System.out.println("Tarifas cargadas del json.");
+        for (JsonObject jsonRate : ratesList) {
+            RateFactory factory = factoriesContainer.getFactories().get(jsonRate.get("tipo").getAsString());
+            try {
+                Rate rate = factory.makeRate(new JsonParametersReader(jsonRate.get("parametros").getAsJsonObject()));
+                RatesRepository.INSTANCE.addRate(rate);
+            } catch (Exception e) {
+                System.out.println("Error al procesar el json: " + e.getMessage() + "\n");
+            }
+        }
     }
 
     private void testRates() {
