@@ -1,0 +1,29 @@
+{
+  "autor": "Miguel",
+  "fecha": "2021-10-01",
+  "tarifas": [
+    {
+      "tipo":"FIX",
+      "parametros": {
+        "name": "Tarifa1",
+        "connectFee": 1,
+        "minutePrice":0.5
+      }
+    },
+    {
+      "tipo":"PERC",
+      "parametros": {
+        "name": "Tarifa2",
+        "percent": 10
+      }
+    },
+    {
+      "tipo":"FIX",
+      "parametros": {
+        "name": "Tarifa3",
+        "connectFee": 4,
+        "minutePrice":1.5
+      }
+    }
+  ]
+}

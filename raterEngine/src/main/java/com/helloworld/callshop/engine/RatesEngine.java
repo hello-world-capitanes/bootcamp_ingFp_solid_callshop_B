@@ -1,16 +1,18 @@
 package com.helloworld.callshop.engine;
 
 
+import com.google.gson.*;
+import com.google.gson.stream.JsonReader;
 import com.helloworld.callshop.rater.rate.Rate;
 import com.helloworld.callshop.rater.rate.RateableCall;
 import com.helloworld.callshop.rater.rate.RatesRepository;
 import com.helloworld.callshop.rater.rate.factory.ParametersReader;
-import com.helloworld.callshop.rater.rate.factory.RateFactoriesConfigReader;
 import com.helloworld.callshop.rater.rate.factory.RateFactoriesContainer;
 import com.helloworld.callshop.rater.rate.factory.RateFactory;
 
+import java.io.FileNotFoundException;
+import java.io.FileReader;
 import java.math.BigDecimal;
-import java.math.RoundingMode;
 import java.time.LocalTime;
 import java.util.ArrayList;
 import java.util.List;
@@ -66,8 +68,40 @@ public class RatesEngine {
         return selectedOption;
     }
 
+    private List<JsonObject> listJsonRates () {
+        Gson gson = new Gson();
+        JsonReader reader;
+        try {
+            reader = new JsonReader(new FileReader("rates.json"));
+        } catch (FileNotFoundException e) {
+            throw new RuntimeException(e);
+        }
+        JsonObject data = gson.fromJson(reader, JsonObject.class);
+        JsonArray ratesArray = data.getAsJsonArray("tarifas");
+        List<JsonObject> ratesList = new ArrayList<>();
+        for (JsonElement element : ratesArray) {
+            ratesList.add(element.getAsJsonObject());
+        }
+
+        return ratesList;
+
+
+    }
+
     public void run() throws Exception{
 
+
+        List<JsonObject> ratesList = listJsonRates();
+        System.out.println("Tarifas cargadas del json.");
+        for (JsonObject jsonRate : ratesList) {
+            RateFactory factory = factoriesContainer.getFactories().get(jsonRate.get("tipo").getAsString());
+            try {
+                Rate rate = factory.makeRate(new JsonParametersReader((JsonObject) jsonRate.get("parametros")));
+                RatesRepository.INSTANCE.addRate(rate);
+            } catch (Exception e) {
+                System.out.println("Error al procesar el json: " + e.getMessage() + "\n");
+            }
+        }
 
         String selectedFactory = "";
 
@@ -77,11 +111,10 @@ public class RatesEngine {
                 Rate rate = factory.makeRate(consoleParametersReader);
                 RatesRepository.INSTANCE.addRate(rate);
             } catch (Exception e) {
-                System.out.println("Error al crear la tarifa: " + e.getMessage());
+                System.out.println("Error al crear la tarifa: " + e.getMessage() + "\n");
             }
 
         }
-
 
         //TESTEAMOS LAS TARIFAS CREADAS. DE AQUÍ HACIA ABAJO, ES SIMPLEMENTE DEMOSTRACIÓN DE FUNCIONAMIENTO Y QUEDA FUERA
         testRates();
